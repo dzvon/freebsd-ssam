@@ -1,0 +1,11 @@
+*.o
+*.ko
+*.ko.debug
+*.ko.full
+.depend*
+export_syms
+opt_*.h
+*_if.h
+machine
+x86
+i386
