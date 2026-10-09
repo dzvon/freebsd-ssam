@@ -773,6 +773,28 @@ ssam_get_fw_version(struct ssam_softc *sc)
 	return (0);
 }
 
+/* Check the link to the SAM and attach the client drivers. */
+static void
+ssam_start(void *arg)
+{
+	struct ssam_softc *sc = arg;
+	int error;
+
+	error = ssam_get_fw_version(sc);
+	if (error != 0) {
+		device_printf(sc->dev, "SAM does not answer (error %d)\n",
+		    error);
+		/* Stay attached, so that the counters can show why. */
+		return;
+	}
+	device_printf(sc->dev, "SAM firmware version %s\n", sc->fw_version);
+
+	bus_topo_lock();
+	device_add_child(sc->dev, "battery", DEVICE_UNIT_ANY);
+	bus_attach_children(sc->dev);
+	bus_topo_unlock();
+}
+
 /*
  * Device interface.
  */
@@ -897,16 +919,14 @@ ssam_attach(device_t dev)
 	device_printf(dev, "%u baud, flow control %#x, FIFO %u, %s\n",
 	    sc->baud, ctx.flow, sc->tx_fifo, sc->msi ? "MSI" : "INTx");
 
-	error = ssam_get_fw_version(sc);
-	if (error != 0) {
-		device_printf(dev, "SAM does not answer (error %d)\n", error);
-		/* Stay attached, so that the counters can show why. */
-		return (0);
-	}
-	device_printf(dev, "SAM firmware version %s\n", sc->fw_version);
-
-	device_add_child(dev, "battery", DEVICE_UNIT_ANY);
-	bus_attach_children(dev);
+	/*
+	 * Requests sleep with a timeout.  During boot, timed sleeps are
+	 * not possible yet, so start from a config hook.
+	 */
+	if (cold)
+		config_intrhook_oneshot(ssam_start, sc);
+	else
+		ssam_start(sc);
 	return (0);
 
 fail:
