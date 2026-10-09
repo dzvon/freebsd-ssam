@@ -1,6 +1,8 @@
 /*-
  * SPDX-License-Identifier: BSD-2-Clause
  *
+ * Copyright (c) 2026 Dezhi Wu
+ *
  * Driver for the Microsoft Surface System Aggregator Module (SSAM).
  */
 

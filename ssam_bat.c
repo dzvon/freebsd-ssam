@@ -1,6 +1,8 @@
 /*-
  * SPDX-License-Identifier: BSD-2-Clause
  *
+ * Copyright (c) 2026 Dezhi Wu
+ *
  * Battery and AC adapter of the Surface System Aggregator Module.
  *
  * The SAM gives the ACPI battery methods (_STA, _BIX, _BST) as requests

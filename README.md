@@ -91,3 +91,7 @@ restart. A module that does not match the kernel does not load.
 - The SSH protocol documentation in the Linux kernel:
   `Documentation/driver-api/surface_aggregator/`.
 - The linux-surface project: <https://github.com/linux-surface>.
+
+## License
+
+BSD 2-Clause. See the `LICENSE` file.
